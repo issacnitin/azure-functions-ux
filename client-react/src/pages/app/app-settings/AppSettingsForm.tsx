@@ -51,31 +51,39 @@ const AppSettingsForm: React.FC<FormikProps<AppSettingsFormValues>> = props => {
   const generalSettingsErrorCheck = () => {
     return generalSettingsError(errors);
   };
+  const dirtyLabel = t('modifiedTag');
   const enableDefaultDocuments = scenarioChecker.checkScenario(ScenarioIds.defaultDocumentsSupported, { site }).status !== 'disabled';
   const enablePathMappings = scenarioChecker.checkScenario(ScenarioIds.virtualDirectoriesSupported, { site }).status !== 'disabled';
   const enableAzureStorageMount = scenarioChecker.checkScenario(ScenarioIds.azureStorageMount, { site }).status === 'enabled';
+  const showGeneralSettings = scenarioChecker.checkScenario(ScenarioIds.showGeneralSettings, { site }).status !== 'disabled';
   return (
     <Pivot getTabId={getPivotTabId}>
       <PivotItem
         onRenderItemLink={(link: IPivotItemProps, defaultRenderer: (link: IPivotItemProps) => JSX.Element) =>
-          CustomTabRenderer(link, defaultRenderer, theme, applicationSettingsDirtyCheck)
+          CustomTabRenderer(link, defaultRenderer, theme, applicationSettingsDirtyCheck, dirtyLabel)
         }
         itemKey="applicationSettings"
         linkText={t('applicationSettings')}>
         <ApplicationSettingsPivot {...props} />
       </PivotItem>
-      <PivotItem
-        onRenderItemLink={(link: IPivotItemProps, defaultRenderer: (link: IPivotItemProps) => JSX.Element) =>
-          CustomTabRenderer(link, defaultRenderer, theme, generalSettingsDirtyCheck, generalSettingsErrorCheck)
-        }
-        itemKey="generalSettings"
-        linkText={t('generalSettings')}>
-        <GeneralSettings {...props} />
-      </PivotItem>
+
+      {showGeneralSettings ? (
+        <PivotItem
+          onRenderItemLink={(link: IPivotItemProps, defaultRenderer: (link: IPivotItemProps) => JSX.Element) =>
+            CustomTabRenderer(link, defaultRenderer, theme, generalSettingsDirtyCheck, dirtyLabel, generalSettingsErrorCheck)
+          }
+          itemKey="generalSettings"
+          linkText={t('generalSettings')}>
+          <GeneralSettings {...props} />
+        </PivotItem>
+      ) : (
+        <></>
+      )}
+
       {enableDefaultDocuments ? (
         <PivotItem
           onRenderItemLink={(link: IPivotItemProps, defaultRenderer: (link: IPivotItemProps) => JSX.Element) =>
-            CustomTabRenderer(link, defaultRenderer, theme, defaultDocumentsDirtyCheck, defaultDocumentsErrorCheck)
+            CustomTabRenderer(link, defaultRenderer, theme, defaultDocumentsDirtyCheck, dirtyLabel, defaultDocumentsErrorCheck)
           }
           itemKey="defaultDocuments"
           linkText={t('defaultDocuments')}>
@@ -88,7 +96,7 @@ const AppSettingsForm: React.FC<FormikProps<AppSettingsFormValues>> = props => {
       {enablePathMappings || enableAzureStorageMount ? (
         <PivotItem
           onRenderItemLink={(link: IPivotItemProps, defaultRenderer: (link: IPivotItemProps) => JSX.Element) =>
-            CustomTabRenderer(link, defaultRenderer, theme, pathMappingsDirtyCheck)
+            CustomTabRenderer(link, defaultRenderer, theme, pathMappingsDirtyCheck, dirtyLabel)
           }
           itemKey="pathMappings"
           linkText={t('pathMappings')}>

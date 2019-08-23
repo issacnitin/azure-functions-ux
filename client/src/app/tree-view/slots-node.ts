@@ -13,7 +13,7 @@ import { Subscription } from '../shared/models/subscription';
 export class SlotsNode extends TreeNode {
   public dashboardType = DashboardType.SlotsDashboard;
   public newDashboardType = DashboardType.CreateSlotDashboard;
-  public title = this.sideNav.translateService.instant(PortalResources.appFunctionSettings_slotsOptinSettings);
+  public title = this.sideNav.translateService.instant(PortalResources.slots_label);
   private _logService: LogService;
   private _functionAppService: FunctionAppService;
 

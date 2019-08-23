@@ -2,20 +2,19 @@ import { FormikProps } from 'formik';
 import { DetailsListLayoutMode, SelectionMode, IColumn } from 'office-ui-fabric-react/lib/DetailsList';
 import React from 'react';
 import { withTranslation, WithTranslation } from 'react-i18next';
-
 import DisplayTableWithEmptyMessage, {
   defaultCellStyle,
 } from '../../../../components/DisplayTableWithEmptyMessage/DisplayTableWithEmptyMessage';
-
 import { AppSettingsFormValues, FormAzureStorageMounts } from '../AppSettings.types';
 import IconButton from '../../../../components/IconButton/IconButton';
 import { ActionButton } from 'office-ui-fabric-react/lib/Button';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 import AzureStorageMountsAddEdit from './AzureStorageMountsAddEdit';
-import { MessageBar, MessageBarType } from 'office-ui-fabric-react';
-import { StorageType, ArmAzureStorageMount } from '../../../../models/WebAppModels';
+import { MessageBar, MessageBarType, TooltipHost } from 'office-ui-fabric-react';
 import { PermissionsContext } from '../Contexts';
 import { sortBy } from 'lodash-es';
+import { ArmAzureStorageMount, StorageType } from '../../../../models/site/config';
+
 export interface AzureStorageMountLocalState {
   showPanel: boolean;
   currentAzureStorageMount: FormAzureStorageMounts | null;
@@ -152,26 +151,38 @@ export class AzureStorageMounts extends React.Component<CombinedProps, AzureStor
 
     if (column.key === 'delete') {
       return (
-        <IconButton
-          className={defaultCellStyle}
-          disabled={!editable}
-          iconProps={{ iconName: 'Delete' }}
-          ariaLabel={t('delete')}
-          title={t('delete')}
-          onClick={() => this.removeItem(index)}
-        />
+        <TooltipHost
+          content={t('delete')}
+          id={`app-settings-storage-mounts-delete-tooltip-${index}`}
+          calloutProps={{ gapSpace: 0 }}
+          closeDelay={500}>
+          <IconButton
+            className={defaultCellStyle}
+            disabled={!editable}
+            id={`app-settings-storage-mounts-delete-${index}`}
+            iconProps={{ iconName: 'Delete' }}
+            ariaLabel={t('delete')}
+            onClick={() => this.removeItem(index)}
+          />
+        </TooltipHost>
       );
     }
     if (column.key === 'edit') {
       return (
-        <IconButton
-          className={defaultCellStyle}
-          disabled={!editable}
-          iconProps={{ iconName: 'Edit' }}
-          ariaLabel={t('edit')}
-          title={t('edit')}
-          onClick={() => this._onShowPanel(item, index)}
-        />
+        <TooltipHost
+          content={t('edit')}
+          id={`app-settings-storage-mounts-edit-tooltip-${index}`}
+          calloutProps={{ gapSpace: 0 }}
+          closeDelay={500}>
+          <IconButton
+            className={defaultCellStyle}
+            disabled={!editable}
+            id={`app-settings-storage-mounts-edit-${index}`}
+            iconProps={{ iconName: 'Edit' }}
+            ariaLabel={t('edit')}
+            onClick={() => this._onShowPanel(item, index)}
+          />
+        </TooltipHost>
       );
     }
     return <div className={defaultCellStyle}>{item[column.fieldName!]}</div>;
@@ -199,7 +210,7 @@ export class AzureStorageMounts extends React.Component<CombinedProps, AzureStor
         fieldName: 'mountPath',
         minWidth: 150,
         maxWidth: 350,
-        isRowHeader: true,
+        isRowHeader: false,
         data: 'string',
         isPadded: true,
         isResizable: true,
@@ -211,7 +222,7 @@ export class AzureStorageMounts extends React.Component<CombinedProps, AzureStor
         fieldName: 'type',
         minWidth: 100,
         maxWidth: 350,
-        isRowHeader: true,
+        isRowHeader: false,
         data: 'string',
         isPadded: true,
         isResizable: true,
@@ -223,7 +234,7 @@ export class AzureStorageMounts extends React.Component<CombinedProps, AzureStor
         fieldName: 'accountName',
         minWidth: 100,
         maxWidth: 350,
-        isRowHeader: true,
+        isRowHeader: false,
         data: 'string',
         isPadded: true,
         isResizable: true,
@@ -235,7 +246,7 @@ export class AzureStorageMounts extends React.Component<CombinedProps, AzureStor
         fieldName: 'shareName',
         minWidth: 100,
         maxWidth: 350,
-        isRowHeader: true,
+        isRowHeader: false,
         data: 'string',
         isPadded: true,
         isResizable: true,
@@ -243,23 +254,25 @@ export class AzureStorageMounts extends React.Component<CombinedProps, AzureStor
       },
       {
         key: 'delete',
-        name: '',
-        minWidth: 16,
-        maxWidth: 16,
-        isResizable: true,
+        name: t('delete'),
+        fieldName: 'delete',
+        minWidth: 100,
+        maxWidth: 100,
+        isRowHeader: false,
+        isResizable: false,
         isCollapsable: false,
         onRender: this.onRenderItemColumn,
-        ariaLabel: t('delete'),
       },
       {
         key: 'edit',
-        name: '',
-        minWidth: 16,
-        maxWidth: 16,
-        isResizable: true,
+        name: t('edit'),
+        fieldName: 'edit',
+        minWidth: 100,
+        maxWidth: 100,
+        isRowHeader: false,
+        isResizable: false,
         isCollapsable: false,
         onRender: this.onRenderItemColumn,
-        ariaLabel: t('edit'),
       },
     ];
   };

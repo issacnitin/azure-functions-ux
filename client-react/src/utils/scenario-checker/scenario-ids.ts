@@ -101,4 +101,7 @@ export class ScenarioIds {
   public static readonly incomingClientCertEnabled = 'incomingClientCertEnabled';
   public static readonly showConnnectionStringFunctionInfo = 'showConnnectionStringFunctionInfo';
   public static readonly azureBlobMount = 'azureBlobMount';
+  public static readonly showGeneralSettings = 'showGeneralSettings';
+  public static readonly isAppDensityEnabled = 'isAppDensityEnabled';
+  public static readonly functionAppRuntimeStack = 'functionAppRuntimeStack';
 }

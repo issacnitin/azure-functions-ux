@@ -147,6 +147,9 @@
   <data name="storage" xml:space="preserve">
     <value>Storage</value>
   </data>
+  <data name="function" xml:space="preserve">
+    <value>Function</value>
+  </data>
   <data name="functionCreateErrorDetails" xml:space="preserve">
     <value>Create Function Error: {{error}}</value>
   </data>
@@ -383,19 +386,19 @@
     <value>A save operation is currently in progress.  Navigating away may cause some changes to be lost.</value>
   </data>
   <data name="addNewSetting" xml:space="preserve">
-    <value>+ Add new setting</value>
+    <value>Add new application setting</value>
   </data>
   <data name="addNewConnectionString" xml:space="preserve">
-    <value>+ Add new connection string</value>
+    <value>Add new connection string</value>
   </data>
   <data name="addNewDocument" xml:space="preserve">
-    <value>+ Add new document</value>
+    <value>Add new document</value>
   </data>
   <data name="addNewHandlerMapping" xml:space="preserve">
-    <value>+ Add new handler mapping</value>
+    <value>Add new handler mapping</value>
   </data>
   <data name="addNewVirtualDirectory" xml:space="preserve">
-    <value>+ Add new virtual application or directory</value>
+    <value>Add new virtual application or directory</value>
   </data>
   <data name="enterName" xml:space="preserve">
     <value>Enter a name</value>
@@ -671,7 +674,7 @@
     <value>Scenario:</value>
   </data>
   <data name="trigger" xml:space="preserve">
-    <value>Triggers</value>
+    <value>Trigger</value>
   </data>
   <data name="tryNow_trialExpired" xml:space="preserve">
     <value>Trial expired</value>
@@ -923,7 +926,10 @@
     <value>'AlwaysOn' is not enabled. Your app may not function properly</value>
   </data>
   <data name="topBar_slotsHostId" xml:space="preserve">
-    <value>The 'AzureWebJobsSecretStorageType' setting should be set to 'blob',not having this setting will cause unexpected behavior when using deployment slots</value>
+    <value>The 'AzureWebJobsSecretStorageType' setting should be set to 'blob'. Not having this setting will cause unexpected behavior when using deployment slots.</value>
+  </data>
+  <data name="topBar_slotsHostIdV2" xml:space="preserve">
+    <value>The 'AzureWebJobsSecretStorageType' setting should not be set to 'files'. Having this setting will cause unexpected behavior when using deployment slots.</value>
   </data>
   <data name="topBar_releaseNotes" xml:space="preserve">
     <value>Azure Functions release notes.</value>
@@ -1084,8 +1090,8 @@
   <data name="apiProxy_alreadyExists" xml:space="preserve">
     <value>Proxy with name '{{name}}' already exists</value>
   </data>
-  <data name="slots_warningOff" xml:space="preserve">
-    <value>Azure functions slots (preview) is currently disabled. To enable, visit</value>
+  <data name="slots_warningDisabled" xml:space="preserve">
+    <value>Azure functions slots is currently disabled.</value>
   </data>
   <data name="discard" xml:space="preserve">
     <value>Discard</value>
@@ -1182,6 +1188,9 @@
   </data>
   <data name="restart" xml:space="preserve">
     <value>Restart</value>
+  </data>
+  <data name="logs" xml:space="preserve">
+    <value>Logs</value>
   </data>
   <data name="swap" xml:space="preserve">
     <value>Swap</value>
@@ -2114,7 +2123,7 @@ Set to "External URL" to use an API definition that is hosted elsewhere.</value>
     <value>ERROR</value>
   </data>
   <data name="validation_linuxAppSettingNameError" xml:space="preserve">
-    <value>This field can only contain letters, numbers (0-9), periods ("."), and underscores ("_")</value>
+    <value>App setting names can only contain letters, numbers (0-9), periods ("."), and underscores ("_")</value>
   </data>
   <data name="validation_requiredError" xml:space="preserve">
     <value>This field is required</value>
@@ -2194,11 +2203,11 @@ Set to "External URL" to use an API definition that is hosted elsewhere.</value>
   <data name="emptyBrowse_title" xml:space="preserve">
     <value>No function apps to display</value>
   </data>
-  <data name="appFunctionSettings_slotsOptinSettings" xml:space="preserve">
-    <value>Slots (preview)</value>
-  </data>
   <data name="appFunctionSettings_slotsDesc" xml:space="preserve">
     <value>Enable deployment slots (preview).</value>
+  </data>
+  <data name="appFunctionSettings_slotsEnable" xml:space="preserve">
+    <value>Enable deployment slots</value>
   </data>
   <data name="appFunctionSettings_warning_1" xml:space="preserve">
     <value>Known issues:</value>
@@ -2207,16 +2216,16 @@ Set to "External URL" to use an API definition that is hosted elsewhere.</value>
     <value>Logic apps integration with Functions does not work when Slots(preview) is enabled.</value>
   </data>
   <data name="appFunctionSettings_warning_3" xml:space="preserve">
-    <value>Opting into this preview feature will reset any pre-existing secrets. Function secrets can be found under the</value>
-  </data>
-  <data name="appFunctionSettings_warning_4" xml:space="preserve">
-    <value>'Manage'</value>
-  </data>
-  <data name="appFunctionSettings_warning_5" xml:space="preserve">
-    <value>node for each function.</value>
+    <value>Enabling this feature will reset any pre-existing secrets. Function secrets can be found under the 'Manage' node for each function.</value>
   </data>
   <data name="slotCreateOperationInProgressWarning" xml:space="preserve">
     <value>A slot create operation is currently in progress. After navigating away, you will no longer be able to check operation status.</value>
+  </data>
+  <data name="slots_label" xml:space="preserve">
+    <value>Slots</value>
+  </data>
+  <data name="slotsPreview_label" xml:space="preserve">
+    <value>Slots (preview)</value>
   </data>
   <data name="slotNew" xml:space="preserve">
     <value>Add Slot</value>
@@ -2295,9 +2304,6 @@ Set to "External URL" to use an API definition that is hosted elsewhere.</value>
   </data>
   <data name="slotsList_trafficPercentHeader" xml:space="preserve">
     <value>Traffic %</value>
-  </data>
-  <data name="slotsList_title" xml:space="preserve">
-    <value>Slots (preview)</value>
   </data>
   <data name="slotsList_tipDeprecationMessage" xml:space="preserve">
     <value>Upcoming changes to Routing Rules</value>
@@ -3205,6 +3211,9 @@ Set to "External URL" to use an API definition that is hosted elsewhere.</value>
   <data name="pricing_pv2UpsellInfoMessage" xml:space="preserve">
     <value>Outgoing IP addresses for your app might change.</value>
   </data>
+  <data name="pricing_appDensityWarningMessage" xml:space="preserve">
+    <value>Your app service plan {0} has exceeded the recommended number of apps for its size.</value>
+  </data>
   <data name="free" xml:space="preserve">
     <value>Free</value>
   </data>
@@ -3539,7 +3548,7 @@ Set to "External URL" to use an API definition that is hosted elsewhere.</value>
     <value>Drag a file here or</value>
   </data>
   <data name="browse" xml:space="preserve">
-    <value>browse</value>
+    <value>Browse</value>
   </data>
   <data name="toUpload" xml:space="preserve">
     <value>to upload</value>
@@ -3563,10 +3572,22 @@ Set to "External URL" to use an API definition that is hosted elsewhere.</value>
     <value>You do not have permissions to create a Build pipeline or a Release pipeline on this project. Contact your project administrator or choose a different project</value>
   </data>
   <data name="vstsAgentQueuePermissions" xml:space="preserve">
-    <value>You do not have permissions to use at any of the available agent pools in this project . Contact your project administrator or choose a different project</value>
+    <value>You do not have permissions to use at any of the available agent pools in this project. Contact your project administrator or choose a different project</value>
+  </data>
+  <data name="vstsCreateRepoPermissions" xml:space="preserve">
+    <value>You do not have permissions to create repository in this project. Contact your project administrator or choose a different project</value>
+  </data>
+  <data name="vstsPipelinesNotEnabled" xml:space="preserve">
+    <value>Azure Pipelines service is not enabled for this project. Contact your project administrator or choose a different project</value>
   </data>
   <data name="vstsNameUnavailable" xml:space="preserve">
     <value>The organization name supplied is not valid. Please supply another organization name.</value>
+  </data>
+  <data name="vstsTokenIsInvalid" xml:space="preserve">
+    <value>Could not fetch a valid Azure DevOps token</value>
+  </data>
+  <data name="vstsTokenFetchFailed" xml:space="preserve">
+    <value>Could not fetch Azure DevOps token. More details: {0}</value>
   </data>
   <data name="FTPBoth" xml:space="preserve">
     <value>FTP + FTPS</value>
@@ -3803,6 +3824,9 @@ Set to "External URL" to use an API definition that is hosted elsewhere.</value>
   <data name="settingupDeploymentFailWithStatusMessage" xml:space="preserve">
     <value>Failed to set up deployment: {0}</value>
   </data>
+  <data name="noPermissionsToCreateApp" xml:space="preserve">
+    <value>You can't register a new application in Azure Active Directory. Learn more: https://go.microsoft.com/fwlink/?linkid=843472. More details: {0}</value>
+  </data>
   <data name="disconnectingDeployment" xml:space="preserve">
     <value>Disconnecting your deployment</value>
   </data>
@@ -3990,7 +4014,7 @@ Set to "External URL" to use an API definition that is hosted elsewhere.</value>
     <value>The repository for web app {0} can not be updated at this time.</value>
   </data>
   <data name="vsts_permissions_error" xml:space="preserve">
-    <value>Azure DevOps Continuous Delivery requires you to have permissions to write to Azure Active Directory and create a service principal.</value>
+    <value>Azure DevOps Continuous Delivery requires you to have permissions to create a service principal in Azure Active Directory and assign role to it.</value>
   </data>
   <data name="quickstartSelectSample" xml:space="preserve">
     <value>Select sample</value>
@@ -4005,7 +4029,7 @@ Set to "External URL" to use an API definition that is hosted elsewhere.</value>
     <value>You do not have any valid Azure DevOps organization</value>
   </data>
   <data name="no_vsts_accounts_kudu" xml:space="preserve">
-    <value>You do not have any valid Azure DevOps organization. App Service Kudu Build also requires you to be organization owner</value>
+    <value>Owner level access to a valid Azure DevOps organization is required.</value>
   </data>
   <data name="create_one" xml:space="preserve">
     <value>Create one now</value>
@@ -4184,9 +4208,6 @@ Set to "External URL" to use an API definition that is hosted elsewhere.</value>
   <data name="hideUrl" xml:space="preserve">
     <value>hide url</value>
   </data>
-  <data name="dynamicLinuxPreview" xml:space="preserve">
-    <value>Linux Consumption Functions are a preview offer.</value>
-  </data>
   <data name="formIsInvalid" xml:space="preserve">
     <value>Some fields are not properly filled out or are required.</value>
   </data>
@@ -4194,7 +4215,7 @@ Set to "External URL" to use an API definition that is hosted elsewhere.</value>
     <value>Finish and go to Deployment Center</value>
   </data>
   <data name="readOnlyLinuxDynamic" xml:space="preserve">
-    <value>Editing functions in the portal is not supported for Linux Consumption Function Apps (Preview).</value>
+    <value>Editing functions in the portal is not supported for Linux Consumption Function Apps.</value>
   </data>
   <data name="readOnlyLinuxCodeElastic" xml:space="preserve">
     <value>Editing functions in the portal is not supported for Linux Premium Function Apps (Preview).</value>
@@ -4324,6 +4345,9 @@ Set to "External URL" to use an API definition that is hosted elsewhere.</value>
   </data>
   <data name="debugging" xml:space="preserve">
     <value>Debugging</value>
+  </data>
+  <data name="modifiedTag" xml:space="preserve">
+    <value>(modified)</value>
   </data>
   <data name="applicationSettings" xml:space="preserve">
     <value>Application settings</value>
@@ -4458,7 +4482,7 @@ Set to "External URL" to use an API definition that is hosted elsewhere.</value>
     <value>Value</value>
   </data>
   <data name="sticky" xml:space="preserve">
-    <value>deployment slot setting</value>
+    <value>Deployment slot setting</value>
   </data>
   <data name="newApplicationSetting" xml:space="preserve">
     <value>New application setting</value>
@@ -4520,7 +4544,7 @@ Set to "External URL" to use an API definition that is hosted elsewhere.</value>
   <data name="savingCredentialsFail" xml:space="preserve">
     <value>Failed to save credentials</value>
   </data>
-  <data name="savingCredentialsSucccess" xml:space="preserve">
+  <data name="savingCredentialsSuccess" xml:space="preserve">
     <value>Successfully saved credentials</value>
   </data>
   <data name="containerPrivateRegistryDescription" xml:space="preserve">
@@ -4605,7 +4629,7 @@ Set to "External URL" to use an API definition that is hosted elsewhere.</value>
     <value>Mount storage (Preview)</value>
   </data>
   <data name="addStorageLink" xml:space="preserve">
-    <value>+ Add storage</value>
+    <value>Add storage</value>
   </data>
   <data name="account" xml:space="preserve">
     <value>Account</value>
@@ -4713,7 +4737,7 @@ Set to "External URL" to use an API definition that is hosted elsewhere.</value>
     <value>New virtual application or directory</value>
   </data>
   <data name="addNewHandler" xml:space="preserve">
-    <value>New handler</value>
+    <value>New handler mapping</value>
   </data>
   <data name="feature_logStreamingConnectionError" xml:space="preserve">
     <value>Unable to open a connection to your app. This may be due to any network security groups or IP restriction rules that you have placed on your app. To use log streaming, please make sure you are able to access your app directly from your current network.</value>
@@ -4788,28 +4812,46 @@ Set to "External URL" to use an API definition that is hosted elsewhere.</value>
     <value>Azure storage mounts contain secrets. Read/Write permissions are required to view/edit this section.</value>
   </data>
   <data name="readOnlyPython" xml:space="preserve">
-    <value>Editing functions in the portal is not supported for Python Function Apps (Preview). Please use the CLI or VS Code for development. &lt;a target="_blank" href="https://go.microsoft.com/fwlink/?linkid=2074230"&gt;Learn more&lt;/a&gt;</value>
+    <value>Editing functions in the portal is not supported for Python Function Apps. Please use the CLI or VS Code for development. &lt;a target="_blank" href="https://go.microsoft.com/fwlink/?linkid=2074230"&gt;Learn more&lt;/a&gt;</value>
   </data>
   <data name="storageMountsNoPermissions" xml:space="preserve">
     <value>Azure storage mounts contain secrets. Read/Write permissions are required to view/edit this section.</value>
   </data>
-  <data name="valuesMustBeAnArray" xml:space="preserve">
+  <data name="slotSettingMustBeBoolean" xml:space="preserve">
+    <value>All deployment slot setting properties must be of type boolean</value>
+  </data>
+  <data name="appSettingValuesMustBeAnArray" xml:space="preserve">
     <value>App setting values must be an array</value>
   </data>
   <data name="appSettingPropIsRequired" xml:space="preserve">
     <value>{0} is a required property on all application settings</value>
   </data>
-  <data name="valueMustBeAString" xml:space="preserve">
+  <data name="appSettingValueMustBeAString" xml:space="preserve">
     <value>All app setting value and name properties must be of type string</value>
   </data>
-  <data name="slotSettingMustBeBoolean" xml:space="preserve">
-    <value>All app setting deployment slot setting properties must be of type boolean</value>
-  </data>
-  <data name="invalidAppSettingProperty" xml:space="preserve">
+  <data name="appSettingInvalidProperty" xml:space="preserve">
     <value>{0} is an invalid app setting property</value>
   </data>
   <data name="appSettingNamesUnique" xml:space="preserve">
     <value>App setting names must be unique</value>
+  </data>
+  <data name="connectionStringValuesMustBeAnArray" xml:space="preserve">
+    <value>Connection string values must be an array</value>
+  </data>
+  <data name="connectionStringPropIsRequired" xml:space="preserve">
+    <value>{0} is a required property on all connection strings</value>
+  </data>
+  <data name="connectionStringValueMustBeAString" xml:space="preserve">
+    <value>All connection string value and name properties must be of type string</value>
+  </data>
+  <data name="connectionStringInvalidProperty" xml:space="preserve">
+    <value>{0} is an invalid connection string property</value>
+  </data>
+  <data name="connectionStringNamesUnique" xml:space="preserve">
+    <value>Connection string names must be unique</value>
+  </data>
+  <data name="handlerMappingPropIsRequired" xml:space="preserve">
+    <value>{0} is a required property on all handler mappings</value>
   </data>
   <data name="jsonInvalid" xml:space="preserve">
     <value>Invalid JSON object</value>
@@ -4962,6 +5004,18 @@ Set to "External URL" to use an API definition that is hosted elsewhere.</value>
   <data name="resourceGroupNameValidationError" xml:space="preserve">
     <value>Resource group name can only include alphanumeric characters, periods, underscores, hyphens and parenthesis and cannot end in a period.</value>
   </data>
+  <data name="aspNameCharacterValidationError" xml:space="preserve">
+    <value>'{0}' is an invalid character</value>
+  </data>
+  <data name="aspNameRestrictedValidationError" xml:space="preserve">
+    <value>The name '{0}' is restricted. Please choose another name.</value>
+  </data>
+  <data name="aspNameLengthValidationError" xml:space="preserve">
+    <value>The name of your plan may not exceed {0} characters.</value>
+  </data>
+  <data name="aspNameConflictValidationError" xml:space="preserve">
+    <value>A plan named '{0}' already exists under the resource group '{1}'</value>
+  </data>
   <data name="cancelUpdateConfirmation" xml:space="preserve">
     <value>Are you sure you would like to cancel the update operation?</value>
   </data>
@@ -4988,5 +5042,77 @@ Set to "External URL" to use an API definition that is hosted elsewhere.</value>
   </data>
   <data name="minorVersion" xml:space="preserve">
     <value>Minor version</value>
+  </data>
+  <data name="containerValidationFailed" xml:space="preserve">
+    <value>Failed to validate container settings.</value>
+  </data>
+  <data name="integrateNoTriggerDefined" xml:space="preserve">
+    <value>No trigger defined</value>
+  </data>
+  <data name="integrateNoInputsDefined" xml:space="preserve">
+    <value>No inputs defined</value>
+  </data>
+  <data name="integrateNoOutputsDefined" xml:space="preserve">
+    <value>No outpus defined</value>
+  </data>
+  <data name="integrateAddInput" xml:space="preserve">
+    <value>+ Add input</value>
+  </data>
+  <data name="_function" xml:space="preserve">
+    <value>Function</value>
+  </data>
+  <data name="fetchingDeploymentData" xml:space="preserve">
+    <value>Fetching deployment data ...</value>
+  </data>
+  <data name="noDeploymentDataAvailable" xml:space="preserve">
+    <value>No deployment data available.</value>
+  </data>
+  <data name="featureNotSupportedForILBASEApps" xml:space="preserve">
+    <value>This feature is not available for apps in an ILB ASE</value>
+  </data>
+  <data name="azureReposLabel" xml:space="preserve">
+    <value>Azure Repos</value>
+  </data>
+  <data name="updateBindingNotification" xml:space="preserve">
+    <value>Updating binding</value>
+  </data>
+  <data name="updateBindingNotificationDetails" xml:space="preserve">
+    <value>Updating {0} ({1})</value>
+  </data>
+  <data name="updateBindingNotificationFailed" xml:space="preserve">
+    <value>Failed to update {0} ({1}): {2}</value>
+  </data>
+  <data name="updateBindingNotificationSuccess" xml:space="preserve">
+    <value>Succeeded in updating {0} ({1})</value>
+  </data>
+  <data name="editBindingInput" xml:space="preserve">
+    <value>Edit input</value>
+  </data>
+  <data name="editBindingOuput" xml:space="preserve">
+    <value>Edit output</value>
+  </data>
+  <data name="editBindingTrigger" xml:space="preserve">
+    <value>Edit trigger</value>
+  </data>
+  <data name="editBindingCommands" xml:space="preserve">
+    <value>Edit binding commands</value>
+  </data>
+  <data name="functionCreate_newFunction" xml:space="preserve">
+    <value>New Function</value>
+  </data>
+  <data name="functionCreate_createFunctionMessage" xml:space="preserve">
+    <value>Create a new function in this Function App. You can start by selecting from a template below or </value>
+  </data>
+  <data name="functionCreate_goToQuickstart" xml:space="preserve">
+    <value>go to the quickstart.</value>
+  </data>
+  <data name="functionCreate_templates" xml:space="preserve">
+    <value>Templates</value>
+  </data>
+  <data name="functionCreate_details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="functionCreate_searchByTemplateName" xml:space="preserve">
+    <value>Search by template name</value>
   </data>
 </root>

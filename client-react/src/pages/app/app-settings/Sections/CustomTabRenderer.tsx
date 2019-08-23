@@ -5,13 +5,14 @@ const CustomTabRenderer = (
   link: IPivotItemProps,
   defaultRenderer: (link: IPivotItemProps) => JSX.Element,
   theme: ThemeExtended,
-  dirtyCheck: () => boolean,
+  dirtyCheck?: () => boolean,
+  dirtyLabel?: string,
   errorCheck?: () => boolean
 ) => {
   let iconState: 'error' | 'dirty' | '' = '';
   if (errorCheck && errorCheck()) {
     iconState = 'error';
-  } else if (dirtyCheck()) {
+  } else if (dirtyCheck && dirtyCheck()) {
     iconState = 'dirty';
   }
 
@@ -35,6 +36,7 @@ const CustomTabRenderer = (
         <Icon
           iconName="Asterisk"
           id={`${link.itemKey}-dirty-icon`}
+          ariaLabel={dirtyLabel}
           styles={{
             root: {
               fontSize: '10px',

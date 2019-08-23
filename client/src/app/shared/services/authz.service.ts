@@ -116,12 +116,12 @@ export class AuthzService implements IAuthzService {
   }
 
   /*
-    * 1. All allowed character escapes are taken into account: \*, \t, \n, \r, \\, \'
-    *    a. \0 is explicitly not supported
-    * 2. All non-escaped wildcards match 0 or more characters of anything
-    * 3. The entire wildcard pattern is matched from beginning to end, and no more (e.g., a*d matches add but not adding or bad).
-    * 4. The pattern matching should be case insensitive.
-    */
+   * 1. All allowed character escapes are taken into account: \*, \t, \n, \r, \\, \'
+   *    a. \0 is explicitly not supported
+   * 2. All non-escaped wildcards match 0 or more characters of anything
+   * 3. The entire wildcard pattern is matched from beginning to end, and no more (e.g., a*d matches add but not adding or bad).
+   * 4. The pattern matching should be case insensitive.
+   */
   private _convertWildCardPatternToRegex(wildCardPattern: string): RegExp {
     wildCardPattern = wildCardPattern.replace(this._wildCardEscapeSequence, '\0'); // sentinel for escaped wildcards
     const regex = this._escapeRegExp(wildCardPattern) // escape the rest of the regex

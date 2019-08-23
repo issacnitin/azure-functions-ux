@@ -1,8 +1,11 @@
-import { Site, ArmObj } from '../../models/WebAppModels';
+import { ArmObj } from '../../models/arm-obj';
+import { Site } from '../../models/site/site';
+import { ServerFarm } from '../../models/serverFarm/serverfarm';
 
 // tslint:disable-next-line:interface-name
 export interface ScenarioCheckInput {
   site?: ArmObj<Site>;
+  serverFarm?: ArmObj<ServerFarm>;
 }
 
 export type ScenarioStatus = 'enabled' | 'disabled' | null;

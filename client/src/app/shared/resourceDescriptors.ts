@@ -41,6 +41,7 @@ export class ArmSubcriptionDescriptor extends Descriptor {
 export class ArmResourceDescriptor extends Descriptor {
   public subscription: string;
   public resourceGroup: string;
+  public resourceGroupId: string;
   public resourceName: string;
 
   constructor(resourceId: string) {
@@ -60,6 +61,7 @@ export class ArmResourceDescriptor extends Descriptor {
 
     this.subscription = this.parts[1];
     this.resourceGroup = this.parts[3];
+    this.resourceGroupId = `/subscriptions/${this.subscription}/resourceGroups/${this.resourceGroup}`;
     this.resourceName = this.parts[this.parts.length - 1];
   }
 
@@ -297,29 +299,5 @@ export class ArmFunctionDescriptor extends ArmSiteDescriptor implements Function
 
   getTrimmedResourceId() {
     return `${super.getTrimmedResourceId()}/${this._isProxy ? 'proxies' : 'functions'}/${this.name}`;
-  }
-}
-
-export class ARMApplicationInsightsDescriptior extends ArmResourceDescriptor {
-  public instanceName: string;
-
-  constructor(resourceId: string) {
-    super(resourceId);
-
-    if (this.parts.length < 8) {
-      throw Error(`resourceId length is too short for Application Insights: ${resourceId}`);
-    }
-
-    this.instanceName = this.parts[7];
-  }
-
-  getTrimmedResourceId() {
-    return `/${this.parts.join('/')}`;
-  }
-
-  getResourceIdForDirectUrl() {
-    // NOTE(michinoy): The aiResourceId is /subscriptions/<sub>/resourceGroups/<rg>/providers/microsoft.insights/components/<name>
-    // to call the app insights instance directly we need /subscriptions/<sub>/resourceGroups/<rg>/components/<name>
-    return `subscriptions/${this.subscription}/resourceGroups/${this.resourceGroup}/components/${this.instanceName}`;
   }
 }

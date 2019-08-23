@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import ActionBar from '../../../../components/ActionBar';
-import { HandlerMapping } from '../../../../models/WebAppModels';
 import { formElementStyle } from '../AppSettings.styles';
 import TextFieldNoFormik from '../../../../components/form-controls/TextFieldNoFormik';
+import { HandlerMapping } from '../../../../models/site/config';
 
 export interface HandlerMappingAddEditProps {
   updateHandlerMapping: (item: HandlerMapping) => any;
@@ -15,13 +15,25 @@ export interface HandlerMappingAddEditProps {
 const HandlerMappingsAddEdit: React.SFC<HandlerMappingAddEditProps> = props => {
   const { updateHandlerMapping, closeBlade, handlerMapping } = props;
   const { t } = useTranslation();
+  const [extensionError, setExtensionError] = useState('');
+  const [scriptProcessorError, setScriptProcessor] = useState('');
   const [currentHandlerMapping, setCurrentHandlerMapping] = useState(handlerMapping);
 
+  const validateHandlerMappingExtension = (value: string) => {
+    return !value ? t('handlerMappingPropIsRequired').format('extension') : '';
+  };
   const updateHandlerMappingExtension = (e: any, extension: string) => {
+    const error = validateHandlerMappingExtension(extension);
+    setExtensionError(error);
     setCurrentHandlerMapping({ ...currentHandlerMapping, extension });
   };
 
+  const validateHandlerMappingScriptProccessor = (value: string) => {
+    return !value ? t('handlerMappingPropIsRequired').format('scriptProccessor') : '';
+  };
   const updateHandlerMappingScriptProccessor = (e: any, scriptProcessor: string) => {
+    const error = validateHandlerMappingScriptProccessor(scriptProcessor);
+    setScriptProcessor(error);
     setCurrentHandlerMapping({ ...currentHandlerMapping, scriptProcessor });
   };
 
@@ -42,7 +54,7 @@ const HandlerMappingsAddEdit: React.SFC<HandlerMappingAddEditProps> = props => {
 
   const actionBarPrimaryButtonProps = {
     id: 'save',
-    title: t('update'),
+    title: t('ok'),
     onClick: save,
     disable: false,
   };
@@ -61,6 +73,7 @@ const HandlerMappingsAddEdit: React.SFC<HandlerMappingAddEditProps> = props => {
         widthOverride="100%"
         id="handler-mappings-table-extension"
         value={currentHandlerMapping.extension}
+        errorMessage={extensionError}
         onChange={updateHandlerMappingExtension}
         styles={{
           root: formElementStyle,
@@ -72,6 +85,7 @@ const HandlerMappingsAddEdit: React.SFC<HandlerMappingAddEditProps> = props => {
         widthOverride="100%"
         id="handler-mappings-table-script-processor"
         value={currentHandlerMapping.scriptProcessor}
+        errorMessage={scriptProcessorError}
         onChange={updateHandlerMappingScriptProccessor}
         styles={{
           root: formElementStyle,

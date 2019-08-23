@@ -80,6 +80,7 @@ export class SiteSummaryComponent extends FeatureComponent<TreeViewInfo<SiteData
   public swapControlsOpen = false;
   public targetSwapSlot: string;
   public siteAvailabilityStateNormal = false;
+  public isLinuxConsumption = false;
 
   private _viewInfo: TreeViewInfo<SiteData>;
   private _subs: Subscription[];
@@ -132,6 +133,7 @@ export class SiteSummaryComponent extends FeatureComponent<TreeViewInfo<SiteData
       .switchMap(context => {
         this.context = context;
         this.siteAvailabilityStateNormal = context.site.properties.availabilityState === SiteAvailabilitySates.Normal;
+        this.isLinuxConsumption = ArmUtil.isLinuxDynamic(this.context.site);
 
         this._setResourceInformation(context);
         this._setAppServicePlanData(context);
@@ -163,7 +165,7 @@ export class SiteSummaryComponent extends FeatureComponent<TreeViewInfo<SiteData
               slotsList: slots.isSuccessful ? slots.result : [],
               pingedScmSite: ping.isSuccessful ? ping.result : false,
               runtime: version,
-              functionInfo: functions.isSuccessful ? functions.result : [],
+              functionsInfo: functions.isSuccessful ? functions.result.value : [],
               appSettings: appSettings,
               siteConfig: siteConfig,
               appInsightsEnablement: appInsightsEnablement,
@@ -183,7 +185,7 @@ export class SiteSummaryComponent extends FeatureComponent<TreeViewInfo<SiteData
               slotsList: [],
               pingedScmSite: ping.isSuccessful ? ping.result : false,
               runtime: null,
-              functionInfo: [],
+              functionsInfo: [],
               appInsightsEnablement: appInsightsEnablement,
             })
           );
@@ -205,7 +207,7 @@ export class SiteSummaryComponent extends FeatureComponent<TreeViewInfo<SiteData
         const workerRuntime = appSettings && appSettings[Constants.functionsWorkerRuntimeAppSettingsName];
         const isPowershell = workerRuntime && WorkerRuntimeLanguages[workerRuntime] === WorkerRuntimeLanguages.powershell;
 
-        if (r.functionInfo.length === 0 && !this.isStandalone && this.hasWriteAccess && r.runtime === FunctionAppVersion.v2) {
+        if (r.functionsInfo.length === 0 && !this.isStandalone && this.hasWriteAccess && r.runtime === FunctionAppVersion.v2) {
           this.showQuickstart = true;
         }
 
@@ -220,16 +222,7 @@ export class SiteSummaryComponent extends FeatureComponent<TreeViewInfo<SiteData
         }
 
         this.notifications = [];
-        if (ArmUtil.isLinuxDynamic(this.context.site)) {
-          this.notifications.push({
-            id: NotificationIds.dynamicLinux,
-            message: this.ts.instant(PortalResources.dynamicLinuxPreview),
-            iconClass: 'fa fa-exclamation-triangle warning',
-            learnMoreLink: Links.dynamicLinuxPreviewLearnMore,
-            clickCallback: null,
-          });
-          this._globalStateService.setTopBarNotifications(this.notifications);
-        } else if (isPowershell) {
+        if (isPowershell) {
           this.notifications.push({
             id: NotificationIds.powershellPreview,
             message: this.ts.instant(PortalResources.powershellPreview),

@@ -47,7 +47,6 @@ import { ExtensionInfo, ExtensionsJson } from 'app/shared/models/extension-info'
 import { Version } from 'app/shared/Utilities/version';
 import { ApplicationSettings } from 'app/shared/models/arm/application-settings';
 import { ArmSiteDescriptor } from '../resourceDescriptors';
-import { Http } from '@angular/http';
 import { FunctionService } from './function.service';
 
 type Result<T> = Observable<HttpResult<T>>;
@@ -63,7 +62,6 @@ export class FunctionAppService {
     private _injector: Injector,
     private _siteService: SiteService,
     private _logService: LogService,
-    private _httpClient: Http,
     private _functionService: FunctionService,
     injector: Injector
   ) {
@@ -92,7 +90,7 @@ export class FunctionAppService {
         return this._userService.getStartupInfo();
       })
       .concatMap(info => {
-        if (ArmUtil.isLinuxApp(context.site)) {
+        if (context.urlTemplates.useNewUrls) {
           return this._cacheService.getArm(`${context.site.id}/hostruntime/admin/host/systemkeys/_master`);
         } else {
           return this._cacheService.get(context.urlTemplates.scmTokenUrl, false, this.headers(info.token));
@@ -104,8 +102,8 @@ export class FunctionAppService {
       });
   }
 
-  getClient(context: FunctionAppContext) {
-    return ArmUtil.isLinuxApp(context.site) ? this.runtime : this.azure;
+  getClient(context: FunctionAppContext): ConditionalHttpClient {
+    return context.urlTemplates.useNewUrls ? this.runtime : this.azure;
   }
 
   getApiProxies(context: FunctionAppContext): Result<ApiProxy[]> {
@@ -170,8 +168,8 @@ export class FunctionAppService {
 
   saveApiProxy(context: FunctionAppContext, jsonString: string): Result<Response> {
     const uri = context.urlTemplates.proxiesJsonUrl;
-
     this._cacheService.clearCachePrefix(uri);
+
     return this.getClient(context).execute({ resourceId: context.site.id }, t =>
       this._cacheService.put(uri, this.jsonHeaders(t, ['If-Match', '*']), jsonString)
     );
@@ -180,7 +178,7 @@ export class FunctionAppService {
   getFileContent(context: FunctionAppContext, file: VfsObject | string): Result<string> {
     const fileHref = typeof file === 'string' ? file : file.href;
 
-    return this.runtime.execute({ resourceId: context.site.id }, t =>
+    return this.getClient(context).execute({ resourceId: context.site.id }, t =>
       this._cacheService.get(fileHref, false, this.headers(t)).map(r => r.text())
     );
   }
@@ -188,7 +186,7 @@ export class FunctionAppService {
   saveFile(context: FunctionAppContext, file: VfsObject | string, updatedContent: string): Result<VfsObject | string> {
     const fileHref = typeof file === 'string' ? file : file.href;
 
-    return this.runtime.execute({ resourceId: context.site.id }, t =>
+    return this.getClient(context).execute({ resourceId: context.site.id }, t =>
       this._cacheService
         .put(fileHref, this.jsonHeaders(t, ['Content-Type', 'plain/text'], ['If-Match', '*']), updatedContent)
         .map(() => file)
@@ -198,13 +196,17 @@ export class FunctionAppService {
   deleteFile(context: FunctionAppContext, file: VfsObject | string, functionInfo?: FunctionInfo): Result<VfsObject | string> {
     const fileHref = typeof file === 'string' ? file : file.href;
 
-    return this.runtime.execute({ resourceId: context.site.id }, t =>
+    return this.getClient(context).execute({ resourceId: context.site.id }, t =>
       this._cacheService.delete(fileHref, this.jsonHeaders(t, ['Content-Type', 'plain/text'], ['If-Match', '*'])).map(() => file)
     );
   }
 
   getRuntimeGeneration(context: FunctionAppContext): Observable<string> {
-    return this.getExtensionVersionFromAppSettings(context).map(v => FunctionsVersionInfoHelper.getFunctionGeneration(v));
+    return this.getExtensionVersionFromAppSettings(context)
+      .map(v => FunctionsVersionInfoHelper.getFunctionGeneration(v))
+      .catch(e => {
+        return Observable.of(FunctionAppVersion.v2);
+      });
   }
 
   private getExtensionVersionFromAppSettings(context: FunctionAppContext) {
@@ -322,7 +324,7 @@ export class FunctionAppService {
         contentType = 'application/json';
       }
 
-      const headers = new Headers();
+      const headers = this.headers(token);
       if (contentType) {
         headers.append('Content-Type', contentType);
       }
@@ -340,25 +342,25 @@ export class FunctionAppService {
         case HttpMethods.GET:
           // make sure to pass 'true' to force make a request.
           // there is no scenario where we want cached data for a function run.
-          response = this._httpClient.get(url, { headers });
+          response = this._cacheService.get(url, true, headers);
           break;
         case HttpMethods.POST:
-          response = this._httpClient.post(url, content, { headers });
+          response = this._cacheService.post(url, true, headers, content);
           break;
         case HttpMethods.DELETE:
-          response = this._httpClient.delete(url, { headers });
+          response = this._cacheService.delete(url, headers);
           break;
         case HttpMethods.HEAD:
-          response = this._httpClient.head(url, { headers });
+          response = this._cacheService.head(url, true, headers);
           break;
         case HttpMethods.PATCH:
-          response = this._httpClient.patch(url, content, { headers });
+          response = this._cacheService.patch(url, headers, content);
           break;
         case HttpMethods.PUT:
-          response = this._httpClient.put(url, content, { headers });
+          response = this._cacheService.put(url, headers, content);
           break;
         default:
-          response = this._httpClient.request(url, { headers, body: content, method: model.method });
+          response = this._cacheService.send(url, model.method, true, headers, content);
           break;
       }
 
@@ -438,7 +440,7 @@ export class FunctionAppService {
       console.error(e);
     }
 
-    return this.azure.execute({ resourceId: context.site.id }, t =>
+    return this.getClient(context).execute({ resourceId: context.site.id }, t =>
       this.getExtensionVersionFromAppSettings(context)
         .concatMap(extensionVersion => {
           if (!extensionVersion) {
@@ -462,20 +464,6 @@ export class FunctionAppService {
           this.localize(bindingConfig);
           return bindingConfig;
         })
-    );
-  }
-
-  updateFunction(context: FunctionAppContext, fi: FunctionInfo): Result<FunctionInfo> {
-    const fiCopy = <FunctionInfo>{};
-    for (const prop in fi) {
-      if (fi.hasOwnProperty(prop) && prop !== 'functionApp') {
-        fiCopy[prop] = fi[prop];
-      }
-    }
-
-    this._cacheService.clearCachePrefix(context.mainSiteUrl);
-    return this.runtime.execute({ resourceId: context.site.id }, t =>
-      this._cacheService.put(fi.href, this.jsonHeaders(t), JSON.stringify(fiCopy)).map(r => r.json() as FunctionInfo)
     );
   }
 
@@ -549,7 +537,7 @@ export class FunctionAppService {
 
   getVfsObjects(context: FunctionAppContext, fi: FunctionInfo | string): Result<VfsObject[]> {
     const href = typeof fi === 'string' ? fi : fi.script_root_path_href;
-    return this.runtime.execute({ resourceId: context.site.id }, t =>
+    return this.getClient(context).execute({ resourceId: context.site.id }, t =>
       this._cacheService.get(href, false, this.headers(t)).map(e => <VfsObject[]>e.json())
     );
   }
@@ -622,6 +610,48 @@ export class FunctionAppService {
         return !config.properties['scmType'] || config.properties['scmType'] !== 'None';
       })
     );
+  }
+
+  isSlotsSupported(appSettings: ArmObj<ApplicationSettings>): boolean {
+    const runtimeGeneration = FunctionsVersionInfoHelper.getFunctionGeneration(
+      appSettings.properties[Constants.runtimeVersionAppSettingName]
+    );
+    const secretStorageSetting =
+      !!appSettings &&
+      appSettings.properties[Constants.secretStorageSettingsName] &&
+      appSettings.properties[Constants.secretStorageSettingsName].toLowerCase();
+
+    // Slots are not supported if the SecretStorageType is 'Files', so we need to determine whether this is
+    // the case based on the app settings 'FUNCTIONS_EXTENSION_VERSION' and 'AzureWebJobsSecretStorageType'
+    let isUsingFilesSecretStorage = true;
+
+    if (runtimeGeneration === 'V1') {
+      // For V1 Function apps, the supported values for 'AzureWebJobsSecretStorageType' are 'Files' and 'Blob'.
+      // The default value is 'Files', which is used if 'AzureWebJobsSecretStorageType' is not set or is set to a non-supported value.
+
+      if (secretStorageSetting === Constants.secretStorageSettingsValueBlob.toLowerCase()) {
+        // AzureWebJobsSecretStorageType is explicitly set to 'Blob'
+        isUsingFilesSecretStorage = false;
+      } else {
+        // AzureWebJobsSecretStorageType is either explicitly set to 'Files' or we are defaulting to
+        // 'Files' because the setting is not configured or is configured with a non-supported value
+        isUsingFilesSecretStorage = true;
+      }
+    } else {
+      // For V2 Function apps, the supported values for 'AzureWebJobsSecretStorageType' are 'Files', 'Blob' and 'KeyVault'.
+      // The default value is 'Blob', which is used if 'AzureWebJobsSecretStorageType' is not set or is set to a non-supported value.
+
+      if (secretStorageSetting === Constants.secretStorageSettingsValueFiles.toLowerCase()) {
+        // AzureWebJobsSecretStorageType is explicitly set to 'Files'
+        isUsingFilesSecretStorage = true;
+      } else {
+        // AzureWebJobsSecretStorageType is either explicitly set to a supported value other than 'Files' or we are
+        // defaulting to 'Blob' because the setting is not configured or is configured with a non-supported value
+        isUsingFilesSecretStorage = false;
+      }
+    }
+
+    return !isUsingFilesSecretStorage;
   }
 
   isSlot(context: FunctionAppContext | string): boolean {
@@ -702,7 +732,12 @@ export class FunctionAppService {
           ? Observable.of({ isSuccessful: true, result: true, error: null })
           : this.getSlotsList(context).map(r => (r.isSuccessful ? Object.assign(r, { result: r.result.length > 0 }) : r)),
         this._functionService.getFunctions(context.site.id),
-        (a, b, s, f) => ({ sourceControlEnabled: a, appSettingsResponse: b, hasSlots: s, functions: f })
+        (a, b, s, f) => ({
+          sourceControlEnabled: a,
+          appSettingsResponse: b,
+          hasSlots: s,
+          functionsInfo: f.isSuccessful ? f.result.value : [],
+        })
       )
         .map(result => {
           const appSettings: ArmObj<{ [key: string]: string }> = result.appSettingsResponse.isSuccessful
@@ -713,9 +748,7 @@ export class FunctionAppService {
 
           let editModeSettingString: string = appSettings ? appSettings.properties[Constants.functionAppEditModeSettingName] || '' : '';
           editModeSettingString = editModeSettingString.toLocaleLowerCase();
-          const vsCreatedFunc = result.functions.isSuccessful
-            ? !!result.functions.result.find((fc: any) => !!fc.config.generatedBy)
-            : false;
+          const vsCreatedFunc = !!result.functionsInfo.find((fc: ArmObj<FunctionInfo>) => !!fc.properties.config.generatedBy);
           const usingRunFromZip = appSettings ? this._getRFZSetting(appSettings) !== '0' : false;
           const usingLocalCache =
             appSettings && appSettings.properties[Constants.localCacheOptionSettingName] === Constants.localCacheOptionSettingValue;
@@ -912,7 +945,7 @@ export class FunctionAppService {
   }
 
   saveHostJson(context: FunctionAppContext, jsonString: string): Result<any> {
-    return this.runtime.execute({ resourceId: context.site.id }, t =>
+    return this.getClient(context).execute({ resourceId: context.site.id }, t =>
       this._cacheService.put(context.urlTemplates.hostJsonUrl, this.jsonHeaders(t, ['If-Match', '*']), jsonString).map(r => r.json())
     );
   }
@@ -933,13 +966,11 @@ export class FunctionAppService {
     );
   }
 
-  // TOOD: [soninaren] Capture 409
-  // TODO: [soninaren] returns error object when resulted in error
-  // TODO: [soninaren] error.id is not defined
   installExtension(context: FunctionAppContext, extension: RuntimeExtension): Result<ExtensionInstallStatus> {
+    const requestBody = { ...extension, PostInstallActions: 'BringAppOnline' };
     return this.runtime.execute({ resourceId: context.site.id }, t =>
       this._cacheService
-        .post(context.urlTemplates.runtimeHostExtensionsUrl, true, this.jsonHeaders(t), extension)
+        .post(context.urlTemplates.runtimeHostExtensionsUrl, true, this.jsonHeaders(t), requestBody)
         .map(r => r.json() as ExtensionInstallStatus)
     );
   }
@@ -1044,8 +1075,19 @@ export class FunctionAppService {
     );
   }
 
-  getAppContext(resourceId: string): Observable<FunctionAppContext> {
-    return this._cacheService.getArm(resourceId).map(r => ArmUtil.mapArmSiteToContext(r.json(), this._injector));
+  getAppContext(resourceId: string, force?: boolean): Observable<FunctionAppContext> {
+    return this._cacheService
+      .getArm(resourceId, force)
+      .map(r => ArmUtil.mapArmSiteToContext(r.json(), this._injector))
+      .switchMap(context => {
+        return Observable.zip(Observable.of(context), this.getRuntimeGeneration(context));
+      })
+      .switchMap(tuple => {
+        const newContext = tuple[0];
+        const version = tuple[1];
+        newContext.urlTemplates.runtimeVersion = version;
+        return Observable.of(newContext);
+      });
   }
 
   getAppContentAsZip(context: FunctionAppContext, includeCsProj: boolean, includeAppSettings: boolean): Result<any> {
@@ -1109,6 +1151,7 @@ export class FunctionAppService {
     const headers = new Headers();
     if (typeof authTokenOrHeader === 'string' && authTokenOrHeader.length > 0) {
       if (authTokenOrHeader.startsWith('masterKey ')) {
+        headers.set('Cache-Control', 'no-cache');
         headers.set('x-functions-key', authTokenOrHeader.substring('masterKey '.length));
       } else {
         headers.set('Authorization', `Bearer ${authTokenOrHeader}`);

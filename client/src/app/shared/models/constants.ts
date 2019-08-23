@@ -27,8 +27,9 @@ export class Constants {
   public static routingExtensionVersionAppSettingName = 'ROUTING_EXTENSION_VERSION';
   public static functionAppEditModeSettingName = 'FUNCTION_APP_EDIT_MODE';
   public static instrumentationKeySettingName = 'APPINSIGHTS_INSTRUMENTATIONKEY';
-  public static slotsSecretStorageSettingsName = 'AzureWebJobsSecretStorageType';
-  public static slotsSecretStorageSettingsValue = 'Blob';
+  public static secretStorageSettingsName = 'AzureWebJobsSecretStorageType';
+  public static secretStorageSettingsValueBlob = 'Blob';
+  public static secretStorageSettingsValueFiles = 'Files';
   public static contentShareConfigSettingsName = 'WEBSITE_CONTENTSHARE';
   public static azureWebJobsDashboardSettingsName = 'AzureWebJobsDashboard';
   public static functionsWorkerRuntimeAppSettingsName = 'FUNCTIONS_WORKER_RUNTIME';
@@ -57,6 +58,7 @@ export class Constants {
   public static WebhookHandlerFunctionName = 'RefreshO365Subscriptions';
   public static WebhookHandlerFunctionId = 'TimerTrigger-CSharpWebhookHandler';
   public static WebhookFunctionName = 'MSGraphWebhook';
+  public static appDensityLimit = 8;
 }
 
 export class TabCommunicationVerbs {
@@ -150,7 +152,6 @@ export class Links {
   public static funcStorageLearnMore = 'https://go.microsoft.com/fwlink/?linkid=2010003';
   public static updateExtensionsLearnMore = 'https://go.microsoft.com/fwlink/?linkid=2013353';
   public static deploymentSlotsLearnMore = 'https://go.microsoft.com/fwlink/?linkid=2014035';
-  public static dynamicLinuxPreviewLearnMore = 'https://go.microsoft.com/fwlink/?linkid=2022864';
   public static communityTemplatesLink = 'https://go.microsoft.com/fwlink/?linkid=2022552&type=functionapp';
   public static linuxContainersLearnMore = 'https://go.microsoft.com/fwlink/?linkid=861969';
   public static premiumV2NotAvailableLearnMore = 'https://go.microsoft.com/fwlink/?linkid=2009376';
@@ -164,6 +165,7 @@ export class Links {
   public static elasticPremiumNotAvailableLearnMore = 'https://go.microsoft.com/fwlink/?linkid=2086603';
   public static clientCertEnabledLearnMore = 'https://go.microsoft.com/fwlink/?linkid=2086188';
   public static powershellPreviewLearnMore = 'https://go.microsoft.com/fwlink/?linkid=2086831';
+  public static appDensityWarningLink = 'https://go.microsoft.com/fwlink/?linkid=2098431';
 }
 
 export class Kinds {
@@ -312,6 +314,10 @@ export class ScenarioIds {
   public static readonly alwaysOnSupported = 'alwaysOnSupported';
   public static readonly enableConsole = 'EnableConsole';
   public static readonly enableLinkAPIM = 'EnableLinkAPIM';
+  public static readonly appDensity = 'appDensity';
+  public static readonly enableKudu = 'EnableKudu';
+  public static readonly enableCORS = 'EnableCORS';
+  public static readonly enableQuotas = 'EnableQuotas';
 }
 
 export class NationalCloudArmUris {
@@ -367,6 +373,7 @@ export class LogCategories {
 export class ARMApiVersions {
   public static websiteApiVersion = '2015-08-01';
   public static websiteApiVersion20160301 = '2016-03-01';
+  public static websiteApiVersion20160901 = '2016-09-01';
   public static websiteApiVersion20180201 = '2018-02-01';
   public static websiteApiVersion20181101 = '2018-11-01';
   public static armApiVersion = '2014-04-01';
@@ -491,6 +498,10 @@ export class DeploymentCenterConstants {
     'https://commerceprodwus21.vscommerce.visualstudio.com/_apis/Subscription/Subscription?memberId={0}&includeMSAAccounts=true&queryOnlyOwnerAccounts=false&inlcudeDisabledAccounts=false&includeMSAAccounts=true&providerNamespaceId=VisualStudioOnline';
 
   public static readonly permissionsInfoLink = 'https://go.microsoft.com/fwlink/?linkid=2086046';
+  public static readonly vstsPermissionApiUri =
+    'https://peprodscussu2.portalext.visualstudio.com/_apis/ContinuousDelivery/PermissionsResult?api-version=4.1-preview.1';
+
+  public static readonly vstsPipelineFeatureId = 'ms.vss-build.pipelines';
   // VSTS Validation constants
   // Build definition
   public static readonly buildSecurityNameSpace = '33344D9C-FC72-4d6f-ABA5-FA317101A7E9';
@@ -503,6 +514,10 @@ export class DeploymentCenterConstants {
   // Agent queues
   public static readonly agentQueueNames = ['Hosted VS2017'];
   public static readonly queueActionFilter = 16; // "Use"
+
+  // Tfs Git permission
+  public static readonly tfsGitSecurityNameSpace = '2E9EB7ED-3C0A-47D4-87C1-0FFDD275FD87';
+  public static readonly createRepositoryPermission = 256;
 
   public static readonly EmptyGuid = '00000000-0000-0000-0000-000000000000';
 }
@@ -610,7 +625,6 @@ export class FeatureFlags {
   public static UseNewSlotsBlade = 'UseNewSlotsBlade';
   public static ShowLegacySlotsBlade = 'ShowLegacySlotsBlade';
   public static oldDeploymentCenter = 'oldvsts';
-  public static EnableLinuxElasticPremium = 'EnableLinuxElasticPremium';
   public static AllowFreeLinux = 'allowfreelinux';
 }
 
@@ -627,4 +641,8 @@ export enum HostKeyTypes {
   masterKey = 'masterKey',
   functionKeys = 'functionKeys',
   systemKeys = 'systemKeys',
+}
+
+export class Pricing {
+  public static hoursInAzureMonth = 730;
 }

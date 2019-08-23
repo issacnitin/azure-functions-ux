@@ -27,6 +27,20 @@ export class DynamicLinuxEnvironment extends Environment {
         return { status: 'disabled' };
       },
     };
+
+    this.scenarioChecks[ScenarioIds.showGeneralSettings] = {
+      id: ScenarioIds.showGeneralSettings,
+      runCheck: () => {
+        return { status: 'disabled' };
+      },
+    };
+
+    this.scenarioChecks[ScenarioIds.enableAuth] = {
+      id: ScenarioIds.enableAuth,
+      runCheck: () => {
+        return { status: 'disabled' };
+      },
+    };
   }
 
   public isCurrentEnvironment(input?: ScenarioCheckInput): boolean {

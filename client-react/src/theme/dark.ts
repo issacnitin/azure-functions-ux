@@ -1,3 +1,4 @@
+import { IPalette } from 'office-ui-fabric-react/lib/Styling';
 import { ThemeExtended } from './SemanticColorsExtended';
 
 const AzurePortalColors = {
@@ -37,8 +38,10 @@ const AzurePortalColors = {
   standardControlOutlineAccent: '#4894fe',
   controlErrorStateOutline: '#f63747',
   controlDirtyOutline: '#c87fdc',
+  cardBorderColor: '#b2b2b2',
 };
-const themePalette = {
+
+const themePalette: IPalette = {
   themePrimary: '#4894fe',
   themeLighterAlt: '#03070a',
   themeLighter: '#0a1a27',
@@ -135,6 +138,8 @@ const semanticColors = {
   buttonBackgroundPressed: AzurePortalColors.buttonPressed,
   buttonBackgroundDisabled: AzurePortalColors.buttonDisabled,
   buttonBorder: AzurePortalColors.buttonRest,
+  buttonBorderFocused: AzurePortalColors.buttonRest,
+  buttonOutlineFocused: themePalette.blueLight,
   buttonText: AzurePortalColors.buttonRest,
   buttonTextHovered: AzurePortalColors.background,
   buttonTextChecked: AzurePortalColors.background,
@@ -148,6 +153,7 @@ const semanticColors = {
   primaryButtonBackgroundPressed: AzurePortalColors.buttonPressed,
   primaryButtonBackgroundDisabled: AzurePortalColors.buttonDisabled,
   primaryButtonBorder: 'transparent',
+  primaryButtonBorderFocused: AzurePortalColors.background,
 
   primaryButtonText: AzurePortalColors.background,
   primaryButtonTextHovered: AzurePortalColors.background,

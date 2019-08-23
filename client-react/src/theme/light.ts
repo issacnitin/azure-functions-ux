@@ -38,6 +38,7 @@ const AzurePortalColors = {
   standardControlOutlineAccent: '#015cda',
   controlErrorStateOutline: '#e00b1c',
   controlDirtyOutline: '#8a2da5',
+  cardBorderColor: '#b2b2b2',
 };
 
 const themePalette: IPalette = {
@@ -137,6 +138,8 @@ const semanticColors = {
   buttonBackgroundPressed: AzurePortalColors.buttonPressed,
   buttonBackgroundDisabled: AzurePortalColors.buttonDisabled,
   buttonBorder: AzurePortalColors.buttonRest,
+  buttonBorderFocused: AzurePortalColors.buttonRest,
+  buttonOutlineFocused: themePalette.blueLight,
   buttonText: AzurePortalColors.buttonRest,
   buttonTextHovered: AzurePortalColors.background,
   buttonTextChecked: AzurePortalColors.background,
@@ -150,6 +153,7 @@ const semanticColors = {
   primaryButtonBackgroundPressed: AzurePortalColors.buttonPressed,
   primaryButtonBackgroundDisabled: AzurePortalColors.buttonDisabled,
   primaryButtonBorder: 'transparent',
+  primaryButtonBorderFocused: AzurePortalColors.background,
 
   primaryButtonText: AzurePortalColors.background,
   primaryButtonTextHovered: AzurePortalColors.background,

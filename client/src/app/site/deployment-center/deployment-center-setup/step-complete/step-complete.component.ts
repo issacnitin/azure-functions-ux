@@ -31,6 +31,7 @@ export class StepCompleteComponent {
   resourceId: string;
   private _busyManager: BusyStateScopeManager;
   private _ngUnsubscribe$ = new Subject();
+  private _saveDeploymentConfig$ = new Subject();
 
   constructor(
     public wizard: DeploymentCenterStateManager,
@@ -44,9 +45,20 @@ export class StepCompleteComponent {
     this.wizard.resourceIdStream$.takeUntil(this._ngUnsubscribe$).subscribe(r => {
       this.resourceId = r;
     });
+
+    this._saveDeploymentConfig$
+      .takeUntil(this._ngUnsubscribe$)
+      .debounceTime(500)
+      .subscribe(_ => {
+        this._saveDeploymentConfig();
+      });
   }
 
   Save() {
+    this._saveDeploymentConfig$.next(true);
+  }
+
+  private _saveDeploymentConfig() {
     const saveGuid = Guid.newGuid();
     this._portalService.logAction('deploymentcenter', 'save', {
       id: saveGuid,
@@ -95,11 +107,13 @@ export class StepCompleteComponent {
         },
         err => {
           this.clearBusy();
-          this._portalService.stopNotification(
-            notificationId,
-            false,
-            this._translateService.instant(PortalResources.settingupDeploymentFail)
-          );
+
+          const errorMessage =
+            err && err.json() && err.json().message
+              ? err && err.json() && err.json().message
+              : this._translateService.instant(PortalResources.settingupDeploymentFail);
+
+          this._portalService.stopNotification(notificationId, false, errorMessage);
           this._logService.error(LogCategories.cicd, '/save-cicd', err);
           this._portalService.logAction('deploymentcenter', 'save', {
             id: saveGuid,
